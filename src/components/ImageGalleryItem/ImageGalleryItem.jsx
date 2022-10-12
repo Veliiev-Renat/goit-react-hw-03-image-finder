@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 export default class Item extends Component{
 
     render(){
+       
         const {results} = this.props
         return(<>
             {results.map(result=>(<li className="ImageGalleryItem" key={result.id}>
@@ -14,5 +15,9 @@ export default class Item extends Component{
 }
 
 Item.propTypes = {
-    results:PropTypes.arrayOf(PropTypes.object),
+    results:PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number,
+        largeImageURL: PropTypes.string,
+        type:PropTypes.string
+      }),),
   };

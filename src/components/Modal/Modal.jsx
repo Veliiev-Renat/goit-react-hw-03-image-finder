@@ -8,17 +8,22 @@ componentDidMount(){
 componentWillUnmount(){
     window.removeEventListener('keydown',this.esc)
 }
+backdropClick=e=>{
+    if(e.currentTarget===e.target){
+        this.props.close()
+    }
+  }
 esc=(e)=>{
     if(e.code==='Escape'){
         this.props.close()
     }
 }
     render(){
-        const {src,click} = this.props
+        const {src} = this.props
         return(
-        <div className="Overlay" onClick={click}>
+        <div className="Overlay" onClick={this.backdropClick}>
         <div className="Modal">
-          <img src={src} alt="" />
+          <img src={src} alt="Your img" />
         </div>
       </div>
         )
@@ -27,7 +32,6 @@ esc=(e)=>{
 
 
 Modal.propTypes = {
-    click:PropTypes.func,
     close:PropTypes.func,
     src:PropTypes.string
   };

@@ -20,14 +20,6 @@ modalClose=()=>{
     open:false})
 }
 
-backdropClick=e=>{
-  if(e.currentTarget===e.target){
-    this.setState({
-      open:false})
-  }
-}
-
-
 openModal=(e)=>{
 if(e.target.nodeName==='IMG'){
   this.setState({
@@ -43,7 +35,7 @@ if(e.target.nodeName==='IMG'){
 <div className="App">
 <Seartchbar onSubmit={this.submit}/>
 <Gallery search={search} click={this.openModal}/>
-{open && <Modal src={img} close={this.modalClose} click={this.backdropClick}/>}
+{open && <Modal src={img} close={this.modalClose} />}
 </div>
 
 </>

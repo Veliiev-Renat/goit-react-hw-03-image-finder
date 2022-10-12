@@ -19,7 +19,7 @@ componentDidUpdate(prevProps,prevState){
 const newSearch = this.props.search
 const prevSearch = prevProps.search
 if(prevState.page !== this.state.page){
-    setTimeout(()=>{fetch(`https://pixabay.com/api/?q=${newSearch}&page=${this.state.page}&key=30307607-789dc1a943b7edc7609021dec&image_type=photo&orientation=horizontal&per_page=12`)
+    fetch(`https://pixabay.com/api/?q=${newSearch}&page=${this.state.page}&key=30307607-789dc1a943b7edc7609021dec&image_type=photo&orientation=horizontal&per_page=12`)
 .then(r=>{
     if(r.ok){
      return r.json()   
@@ -33,7 +33,7 @@ if(prevState.page !== this.state.page){
     this.setState((prevState)=>({images:[...prevState.images,...hits]}))
 })
 .catch(error=>this.setState({error}))
-.finally(()=>this.setState({loading:false}))} ,1000  )
+.finally(()=>this.setState({loading:false}))
 }
 
 if(prevSearch !== newSearch){
