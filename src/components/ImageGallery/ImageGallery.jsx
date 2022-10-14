@@ -8,18 +8,21 @@ export default class Gallery extends Component{
 state={
 images:[],
 loading:false,
-page:1
+hidden:false
 }
 
-click=(e)=>{
-this.setState(prevState=>({page:prevState.page + 1}))
-}
 
-componentDidUpdate(prevProps,prevState){
-const newSearch = this.props.search
-const prevSearch = prevProps.search
-if(prevState.page !== this.state.page){
-    fetch(`https://pixabay.com/api/?q=${newSearch}&page=${this.state.page}&key=30307607-789dc1a943b7edc7609021dec&image_type=photo&orientation=horizontal&per_page=12`)
+componentDidUpdate(prevProps){
+    if(this.props.search.trim()===''){
+        return
+    }
+    if( this.props.search !== prevProps.search || prevProps.page !== this.props.page){
+    if( this.props.search !== prevProps.search){
+        this.setState({images:[]})
+    }
+    this.setState({hidden:true,
+    loading:true})
+    fetch(`https://pixabay.com/api/?q=${this.props.search}&page=${this.props.page}&key=30307607-789dc1a943b7edc7609021dec&image_type=photo&orientation=horizontal&per_page=12`)
 .then(r=>{
     if(r.ok){
      return r.json()   
@@ -30,44 +33,25 @@ if(prevState.page !== this.state.page){
     })
 .then(images=>{
     const {hits} = images
+    if(hits.length===0 || hits.length<12){
+        this.setState({hidden:false})
+    }
     this.setState((prevState)=>({images:[...prevState.images,...hits]}))
 })
-.catch(error=>this.setState({error}))
+.catch(()=>console.log('error'))
 .finally(()=>this.setState({loading:false}))
-}
-
-if(prevSearch !== newSearch){
-
-this.setState({loading:true,images:[]})
-
-setTimeout(()=>{fetch(`https://pixabay.com/api/?q=${newSearch}&page=${this.state.page}&key=30307607-789dc1a943b7edc7609021dec&image_type=photo&orientation=horizontal&per_page=12`)
-.then(r=>{
-    if(r.ok){
-     return r.json()   
-    }
-    return Promise.reject(
-        new Error(`Error`)
-    )
-    })
-.then(images=>{
-    const {hits} = images
-    this.setState((prevState)=>({images:[...prevState.images,...hits]}))
-})
-.catch(error=>this.setState({error}))
-.finally(()=>this.setState({loading:false}))} ,1000  )
- 
 }
 
 }
     render(){
-        const{images,loading}=this.state
-        const {click} = this.props
+        const{images,loading,hidden}=this.state
+        const {click,downloadMore} = this.props
         return(
         <>
             <ul className="ImageGallery" onClick={click}>
             {images.length > 0 && <Item results={images}/>}
             </ul>
-            {images.length > 0 && <Button click={this.click}/>}
+            {hidden && <Button click={downloadMore}/>}
             {loading && <Loader/>}
             </>
             )
@@ -75,5 +59,8 @@ setTimeout(()=>{fetch(`https://pixabay.com/api/?q=${newSearch}&page=${this.state
 }
 
 Gallery.propTypes = {
-    click: PropTypes.func
+    search: PropTypes.string,
+    page: PropTypes.number,
+    click: PropTypes.func,
+    downloadMore: PropTypes.func
   };

@@ -7,12 +7,17 @@ export class App extends Component{
 state ={
   search: '',
   open:false,
-  img:''
+  img:'',
+  page:1
 }
 submit=(e)=>{
   e.preventDefault()
+  if(e.target.elements[1].value.trim()===''){
+    return
+  }
   this.setState({search:e.target.elements[1].value})
   e.target.elements[1].value=''
+  this.setState({page:1})
 }
 
 modalClose=()=>{
@@ -28,13 +33,16 @@ if(e.target.nodeName==='IMG'){
   })
  }
 }
+downloadMore=()=>{
+  this.setState(prevState=>({page:prevState.page + 1}))
+}
   render(){
-    const {search,img,open} = this.state
+    const {search,img,open,page} = this.state
     return (
 <>
 <div className="App">
 <Seartchbar onSubmit={this.submit}/>
-<Gallery search={search} click={this.openModal}/>
+<Gallery search={search} click={this.openModal} page={page} downloadMore={this.downloadMore}/>
 {open && <Modal src={img} close={this.modalClose} />}
 </div>
 
